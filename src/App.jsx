@@ -43,6 +43,25 @@ export default function App() {
   async function fetchUserProfile() {
   const { data: profiles } = await client.models.UserProfile.list();
   setUserProfiles(profiles);
+  try {
+    console.log('Fetching user profiles...');
+    
+    const response = await client.models.UserProfile.list();
+    console.log('API Response:', response);
+    
+    if (response.data) {
+      console.log('Profiles found:', response.data);
+      setUserProfiles(response.data);
+    } else {
+      console.log('No profiles in response');
+    }
+    
+    if (response.errors) {
+      console.error('API Errors:', response.errors);
+    }
+  } catch (error) {
+    console.error('Error fetching profiles:', error);
+  }
   }
   fetchUserProfile();
  }, []);
