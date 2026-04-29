@@ -16,6 +16,10 @@ import outputs from "../amplify_outputs.json";
  * @type {import('aws-amplify/data').Client<import('../amplify/data/resource').Schema>}
  */
 Amplify.configure(outputs);
+import { getCurrentUser } from 'aws-amplify/auth';
+
+
+
 const client = generateClient({
  authMode: "userPool",
 });
@@ -23,6 +27,18 @@ export default function App() {
  const [userprofiles, setUserProfiles] = useState([]);
  const { signOut } = useAuthenticator((context) => [context.user]);
 
+ useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const user = await getCurrentUser();
+        console.log('Current user:', user);
+      } catch (error) {
+        console.log('User not authenticated:', error);
+      }
+    };
+    
+    checkAuth();
+  }, []);
  useEffect(() => { 
   async function fetchUserProfile() {
   const { data: profiles } = await client.models.UserProfile.list();
